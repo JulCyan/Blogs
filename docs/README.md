@@ -4,7 +4,7 @@ heroImage: /JulCyan.png
 heroText: JulCyan
 tagline: 全栈知识点记录
 actionText: 快速开始
-actionLink: /web/html/Basics
+actionLink: /web/basics/html/
 features:
 - title: Web
   details: HTML, CSS, JS, ESNext, React, Vue, Webpack, TypeScript

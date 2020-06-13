@@ -6,43 +6,93 @@ module.exports = {
     nav: [
       {
         text: "Web",
-        text: "Web",
         items: [
-          { text: "HTML", link: "/web/html/Basics" },
-          { text: "CSS", link: "/web/css/Basics" },
-          { text: "JS", link: "/web/js/Basics" }
+          { text: '基础', link: "/web/basics/html/" },
+          { text: 'Vue', link: "/web/vue/" },
+          { text: 'Webpack', link: "/web/webpack/" },
+          { text: 'Node.js', link: "/web/node/" }
         ]
       },
       { text: "Java", link: "/java/" },
       { text: "其他", link: "/others/" }
     ],
     sidebar: {
-      "/web/html/": [
+      "/web/basics/": [
         {
           title: "HTML",
           collapsable: true,
           children: [
-            { title: "Basics", path: "/web/html/Basics" }
+            { title: "Basics", path: "/web/basics/html/" }
           ]
-        }
-      ],
-      "/web/css/": [
+        },
+        {
+          title: "CSS",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/basics/css/" },
+            { title: "C3", path: "/web/basics/css/High" },
+          ]
+        },
         {
           title: "JavaScript",
           collapsable: true,
           children: [
-            { title: "Basics", path: "/web/css/Basics" }
+            { title: "Basics", path: "/web/basics/js/" }
+          ]
+        },
+        {
+          title: "JQuery",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/basics/jq/" },
+            { title: "Bootstrap", path: "/web/basics/jq/Bootstrap" },
+          ]
+        },
+        {
+          title: "MarkDown",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/basics/markdown/" }
+          ]
+        },
+        {
+          title: "Git",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/basics/git/" }
           ]
         }
       ],
-      "/web/js/": [
+      "/web/vue/": [
         {
-          title: "JavaScript",
+          title: "Vue",
           collapsable: true,
           children: [
-            { title: "Basics", path: "/web/js/Basics" }
+            { title: "Basics", path: "/web/vue/" },
+            { title: "VueRouter", path: "/web/vue/VueRouter" },
+            { title: "Element", path: "/web/vue/Element" },
+            { title: "VueCLI", path: "/web/vue/VueCLI" },
+            { title: "开发问题", path: "/web/vue/Config" },
           ]
-        }
+        },
+      ],
+      "/web/webpack/": [
+        {
+          title: "Webpack",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/webpack/" }
+          ]
+        },
+      ],
+      "/web/node/": [
+        {
+          title: "Node.js",
+          collapsable: true,
+          children: [
+            { title: "Basics", path: "/web/node/" }
+          ]
+        },
       ]
     }
   },
