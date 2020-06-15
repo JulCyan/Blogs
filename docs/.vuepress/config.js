@@ -10,11 +10,12 @@ module.exports = {
           { text: '基础', link: "/web/basics/html/" },
           { text: 'Vue', link: "/web/vue/" },
           { text: 'Webpack', link: "/web/webpack/" },
-          { text: 'Node.js', link: "/web/node/" },
-          { text: '技术选型', link: "/web/choice/" },
+          { text: 'Node.js', link: "/web/node/" }
         ]
       },
       { text: "Java", link: "/java/" },
+      { text: "Article", link: "/article/" },
+      { text: "Repositories", link: "/repositories/" },
       { text: "其他", link: "/others/" }
     ],
     sidebar: {
@@ -93,6 +94,13 @@ module.exports = {
           children: [
             { title: "Basics", path: "/web/node/" }
           ]
+        },
+      ],
+      "/article/": [
+        {
+          title: "技术选型",
+          collapsable: true,
+          path: '/article/technologySelection'
         },
       ]
     }
