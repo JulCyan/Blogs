@@ -91,12 +91,10 @@ module.exports = {
           children: [
             {
               title: "Linux",
-              collapsable: true,
               path: "/ops/linux"
             },
             {
               title: "Docker",
-              collapsable: true,
               path: "/ops/docker"
             }
           ]
