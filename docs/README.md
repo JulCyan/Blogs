@@ -10,5 +10,7 @@ features:
   details: HTML, CSS, JS, ESNext, React, Vue, Webpack, TypeScript
 - title: Java
   details: Basics, MySQL, MyBatis, Spring, Spring MVC, Spring Boot
-footer: MIT Licensed | Copyright © 2020 JulCyan
+- title: OPS
+  details: Linux, Docker
+footer: MIT Licensed | Copyright © 2021 JulCyan
 ---

@@ -14,9 +14,9 @@ module.exports = {
         ]
       },
       { text: "Java", link: "/java/" },
-      { text: "Article", link: "/article/" },
+      { text: "OPS", link: "/ops/linux" },
+      { text: "Article", link: "/article/technologySelection" },
       { text: "Repositories", link: "/repositories/" },
-      { text: "其他", link: "/others/" }
     ],
     sidebar: {
       "/web/basics/": [
@@ -84,14 +84,33 @@ module.exports = {
           children: [{ title: "Basics", path: "/web/node/" }]
         }
       ],
+      "/ops/": [
+        {
+          title: "OPS",
+          collapsable: true,
+          children: [
+            {
+              title: "Linux",
+              collapsable: true,
+              path: "/ops/linux"
+            },
+            {
+              title: "Docker",
+              collapsable: true,
+              path: "/ops/docker"
+            }
+          ]
+        }
+      ],
       "/article/": [
         {
           title: "Article",
           collapsable: true,
           children: [
             {
-              title: "技术选型",
+              title: "移动端技术选型",
               collapsable: true,
+              
               path: "/article/technologySelection"
             },
             {
