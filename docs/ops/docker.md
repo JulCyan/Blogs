@@ -36,7 +36,7 @@ sudo yum install docker-ce
 docker -v
 ```
 
-（6）设置ustc镜像
+（6）设置镜像
 
 ```shell
 sudo vi /etc/docker/daemon.json
@@ -45,8 +45,13 @@ sudo vi /etc/docker/daemon.json
 添加内容
 
 ```json
+// ustc
 {
-"registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"]
+  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"]
+}
+// 或 docker 中国
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"]
 }
 ```
 
@@ -117,7 +122,7 @@ docker rmi `docker images -q`    	# 删除所有镜像
 
 ### 容器相关
 
-1）查看容器
+**1）查看容器**
 
 ```shell
 docker ps 					# 查看正在运行中的容器
@@ -126,7 +131,7 @@ docker ps -l				# 查看最后一次运行的容器
 docker ps -f status=exited  # 查看停止的容器
 ```
 
- 2）创建与启动容器
+**2）创建与启动容器**
 
 ```shell
 docker run 		# 创建容器命令
@@ -162,21 +167,27 @@ docker run -di --name=容器名称 镜像名称:标签
 docker exec -it 容器名称 (或者容器ID)  /bin/bash 	# 登录守护式容器
 ```
 
-3）停止与启动容器
+- 重命名容器
+
+```
+docker rename 原容器名称 新容器名称
+```
+
+**3）停止与启动容器**
 
 ```
 docker stop 容器名称（或者容器ID）	# 停止
 docker start 容器名称（或者容器ID）	# 启动
 ```
 
-4）文件拷贝
+**4）文件拷贝**
 
 ```shell
 docker cp 需要拷贝的文件或目录 容器名称:容器目录	# 将文件拷贝到容器内
 docker cp 容器名称:容器目录 需要拷贝的文件或目录	# 将文件从容器内拷贝出来
 ```
 
-5）目录挂载
+**5）目录挂载**
 
 在创建容器的时候，将宿主机的目录与容器内的目录进行映射，这样就可以通过修改宿主机某个目录的文件从而去影响容器
 
@@ -190,7 +201,7 @@ docker run -di -v /usr/local/myhtml:/usr/local/myhtml --name=mycentos3 centos:7
 
 这是因为CentOS7中的安全模块selinux把权限禁掉了，需要添加参数  --privileged=true  来解决挂载的目录没有权限的问题
 
-6）查看容器信息
+**6）查看容器信息**
 
 ```shell
 # 查看容器运行的各种数据
@@ -199,7 +210,7 @@ docker inspect 容器名称（容器ID）
 docker inspect --format='{{.NetworkSettings.IPAddress}}' 容器名称（容器ID）
 ```
 
-7）删除容器
+**7）删除容器**
 
 ```shell
 docker rm 容器名称（容器ID）
@@ -219,4 +230,149 @@ docker run -di --name=tensquare_mysql -p 33306:3306 -e MYSQL_ROOT_PASSWORD=12345
 # -p 代表端口映射，格式为  宿主机映射端口:容器运行端口
 # -e 代表添加环境变量  MYSQL_ROOT_PASSWORD  是root用户的登陆密码
 ```
+
+## 迁移与备份
+
+以容器 mynginx 为例
+
+```shell
+# 将容器保存为镜像
+docker commit mynginx mynginx_img
+# 镜像备份, 将镜像保存为tar 文件
+docker save -o mynginx.tar mynginx_img
+# 删除掉mynginx_img镜像, 然后恢复
+docker rmi mynginx_img
+docker load -i mynginx.tar
+```
+
+## Dockerfile
+
+### 什么是Dockerfile
+
+Dockerfile是由一系列命令和参数构成的脚本，这些命令应用于基础镜像并最终创建一个新的镜像。
+
+1、对于开发人员：可以为开发团队提供一个完全一致的开发环境； 
+2、对于测试人员：可以直接拿开发时所构建的镜像或者通过Dockerfile文件构建一个新的镜像开始工作了； 
+3、对于运维人员：在部署时，可以实现应用的无缝移植。
+
+### 常用命令
+
+| 命令                               | 作用                                                         |
+| ---------------------------------- | ------------------------------------------------------------ |
+| FROM image_name:tag                | 定义了使用哪个基础镜像启动构建流程                           |
+| MAINTAINER user_name               | 声明镜像的创建者                                             |
+| ENV key value                      | 设置环境变量 (可以写多条)                                    |
+| RUN command                        | 是Dockerfile的核心部分(可以写多条)                           |
+| ADD source_dir/file dest_dir/file  | 将宿主机的文件复制到容器内，如果是一个压缩文件，将会在复制后自动解压 |
+| COPY source_dir/file dest_dir/file | 和ADD相似，但是如果有压缩文件并不能解压                      |
+| WORKDIR path_dir                   | 设置工作目录                                                 |
+
+### 使用脚本创建镜像
+
+1）创建目录
+
+```shell
+mkdir –p /usr/local/dockerjdk8
+```
+
+2）下载jdk-8u171-linux-x64.tar.gz并上传到服务器（虚拟机）中的/usr/local/dockerjdk8目录
+
+3）创建文件Dockerfile  `vi Dockerfile`
+
+```
+#依赖镜像名称和ID
+FROM centos:7
+#指定镜像创建者信息
+MAINTAINER JulCyan
+#切换工作目录
+WORKDIR /usr
+RUN mkdir  /usr/local/java
+#ADD 是相对路径jar,把java添加到容器中
+ADD jdk-8u171-linux-x64.tar.gz /usr/local/java/
+
+#配置java环境变量
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_171
+ENV JRE_HOME $JAVA_HOME/jre
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH $JAVA_HOME/bin:$PATH
+```
+
+4）执行命令构建镜像
+
+```
+docker build -t='jdk1.8' .
+```
+
+注意后边的空格和点，不要省略
+
+5）查看镜像是否建立完成
+
+```
+docker images
+```
+
+
+
+## Docker 私有仓库
+
+###  私有仓库搭建与配置
+
+1）拉取私有仓库镜像（此步省略）
+
+```
+docker pull registry
+```
+
+2）启动私有仓库容器
+
+```
+docker run -di --name=registry -p 5000:5000 registry
+```
+
+3）假设虚拟机静态ip 为`192.168.23.129`
+
+访问 http://192.168.23.129:5000/v2/_catalog 看到`{"repositories":[]}` 表示私有仓库搭成功并且内容为空
+
+4）修改daemon.json
+
+```shell
+sudo vi /etc/docker/daemon.json
+```
+
+添加以下内容，保存退出。
+
+```json
+{"insecure-registries":["192.168.23.129:5000"]} 
+```
+
+此步用于让 docker信任私有仓库地址
+
+5）重启docker 服务
+
+```shell
+systemctl restart docker
+```
+
+### 镜像上传至私有仓库
+
+1）标记此镜像为私有仓库的镜像
+
+```shell
+# tag 镜像名格式为 remotehost/[命令空间]/仓库名
+docker tag jdk1.8 192.168.23.129:5000/jdk1.8
+```
+
+2）再次启动私服容器
+
+```
+docker start registry
+```
+
+3）上传标记的镜像
+
+```
+docker push 192.168.23.129:5000/jdk1.8
+```
+
+
 
