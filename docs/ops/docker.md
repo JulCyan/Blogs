@@ -199,3 +199,24 @@ docker inspect 容器名称（容器ID）
 docker inspect --format='{{.NetworkSettings.IPAddress}}' 容器名称（容器ID）
 ```
 
+7）删除容器
+
+```shell
+docker rm 容器名称（容器ID）
+```
+
+
+
+## 应用部署
+
+### MySQL部署
+
+```shell
+# 拉取mysql镜像
+docker pull centos/mysql-57-centos7
+# 创建容器
+docker run -di --name=tensquare_mysql -p 33306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
+# -p 代表端口映射，格式为  宿主机映射端口:容器运行端口
+# -e 代表添加环境变量  MYSQL_ROOT_PASSWORD  是root用户的登陆密码
+```
+

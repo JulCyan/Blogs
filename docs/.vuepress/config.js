@@ -84,6 +84,22 @@ module.exports = {
           children: [{ title: "Basics", path: "/web/node/" }]
         }
       ],
+      "/java/": [
+        {
+          title: "Java",
+          collapsable: true,
+          children: [
+            {
+              title: "Java",
+              path: "/java/"
+            },
+            {
+              title: "SQL",
+              path: "/java/SQL"
+            }
+          ]
+        }
+      ],
       "/ops/": [
         {
           title: "OPS",
