@@ -10,7 +10,7 @@
 
 以网段 23 为例
 
-![1618543567529](/images/ops/linux/1618543567529.png)
+![1618543567529](./images/1618543567529.png)
 
 控制面板/所有控制面板项/网络连接 	VMware Network Adapter VMnet8保证是启用状态
 
@@ -20,7 +20,7 @@
 sudo vi /etc/sysconfig/network-scripts/ifcfg-ens33 # 修改网卡配置文件
 ```
 
-![1618543866529](/images/ops/linux/1618543866529.png)
+![1618543866529](./images/1618543866529.png)
 
 BOOTPROTO设置为静态static 
 IPADDR设置ip地址 
@@ -38,7 +38,7 @@ sudo systemctl restartnetwork
 ifconfig
 ```
 
-![1618544033254](/images/ops/linux/1618544033254.png)
+![1618544033254](./images/1618544033254.png)
 
 **4）宿主机与虚拟机互 ping**
 
@@ -61,7 +61,7 @@ IPv4 的属性, 默认为自动获取 ip 即可 （使用windows 诊断也可）
 3）CRT 中出现 The remote system refused the connection 但 宿主机可以 ping 通虚拟机时参考 **2）**
 
 4）虚拟机 ping 通宿主机, 宿主机 ping 不通虚拟机, 参考 **2） 1）**
-
+x
 5）NAT 模式可以满足所有需求
 
 
