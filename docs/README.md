@@ -1,3 +1,5 @@
+https://julcyan.github.io/Blogs/
+
 ---
 home: true
 heroImage: /JulCyan.png
