@@ -1,11 +1,11 @@
 module.exports = {
-  base: "/Blogs/",
+  base: "/blogs/",
   title: "JulCyan",
   description: "Full Stack Developer' Blogs",
   themeConfig: {
     nav: [
       {
-        text: "Web",
+        text: "Frontend",
         items: [
           { text: "基础", link: "/web/basics/html/" },
           { text: "Vue", link: "/web/vue/" },
@@ -13,7 +13,7 @@ module.exports = {
           { text: "Node.js", link: "/web/node/" }
         ]
       },
-      { text: "Java", link: "/java/" },
+      { text: "Backend", link: "/backend/" },
       { text: "OPS", link: "/ops/linux" },
       { text: "Article", link: "/article/technologySelection" },
       { text: "Repositories", link: "/repositories/" },
@@ -84,18 +84,22 @@ module.exports = {
           children: [{ title: "Basics", path: "/web/node/" }]
         }
       ],
-      "/java/": [
+      "/backend/": [
         {
-          title: "Java",
+          title: "Backend",
           collapsable: true,
           children: [
             {
+              title: "Go",
+              path: "/backend/"
+            },
+            {
               title: "Java",
-              path: "/java/"
+              path: "/backend/Java"
             },
             {
               title: "SQL",
-              path: "/java/SQL"
+              path: "/backend/SQL"
             }
           ]
         }
@@ -124,7 +128,7 @@ module.exports = {
             {
               title: "移动端技术选型",
               collapsable: true,
-              
+
               path: "/article/technologySelection"
             },
             {
