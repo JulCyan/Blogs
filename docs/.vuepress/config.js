@@ -1,5 +1,5 @@
 module.exports = {
-  base: "/blogs/",
+  base: "/Blogs/",
   title: "JulCyan",
   description: "Full Stack Developer' Blogs",
   themeConfig: {
