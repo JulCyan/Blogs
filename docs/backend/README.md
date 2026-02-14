@@ -1,6 +1,6 @@
-# Go Web 开发全栈指南 (基于 go-web-template)
+# Go Web 开发全栈指南
 
-这份指南基于你在这个项目中的实战经历，整理了从环境搭建到数据库集成的完整路径。
+这份指南基于实战经历，整理了从环境搭建到数据库集成、再到 RESTful CRUD 的完整路径。
 
 ---
 
@@ -11,11 +11,47 @@
 - **下载**: [Go 官网](https://go.dev/dl/) 或 [Go 中文网](https://studygolang.com/dl)
 - **安装**: Windows 下直接运行 MSI 安装包，默认安装路径 `C:\Program Files\Go`。
 - **验证**: 打开终端 (PowerShell / CMD) 输入 `go version`。
-- **环境配置**:
-  - `GOPROXY`: 开启模块代理加速下载 (重要!)
-    ```powershell
-    go env -w GOPROXY=https://goproxy.cn,direct
-    ```
+
+### 1.4 家里开发环境搭建 (Home Setup & Migration)
+
+由于项目依赖公司私有包 (`your-company.com`), 在家无法直接连公司 Git，需要手动迁移依赖。
+
+#### Step 1: 准备迁移包 (在公司电脑)
+
+找到 `GOMODCACHE` 目录 (通常是 `C:\Users\Admin\go\pkg\mod`)，打包以下文件夹：
+
+1. `your-company.com` 文件夹
+2. `github.com/your-org` 文件夹
+3. 整个 `my-go-project` 项目文件夹
+
+#### Step 2: 恢复环境 (在家里电脑)
+
+1. **安装 Go**: 建议版本 1.25+
+2. **恢复依赖**: 将打包的 `your-company.com` 等文件夹，解压到家里电脑的 `GOMODCACHE` 对应位置。
+3. **配置 Go 环境变量** (禁止联网拉取私有包):
+   ```powershell
+   go env -w GOFLAGS="-mod=mod"
+   go env -w GOPRIVATE="your-company.com,*.your-company.com,github.com/your-org"
+   go env -w GONOSUMCHECK="your-company.com,*.your-company.com"
+   ```
+4. **启动 Docker MySQL**:
+   ```bash
+   docker run --name mysql -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql:8.0
+   ```
+5. **创建数据库表**:
+
+   ```sql
+   CREATE DATABASE IF NOT EXISTS my_go_project;
+   USE my_go_project;
+
+   CREATE TABLE `users` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `name` varchar(255) DEFAULT '',
+     `email` varchar(255) NOT NULL,
+     PRIMARY KEY (`id`),
+     UNIQUE KEY `email` (`email`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+   ```
 
 ### 1.2 开发工具 (IDE)
 
@@ -35,7 +71,7 @@
 
 ## 🏗️ 2. 项目架构 (Project Structure)
 
-Go Web 项目通常采用分层架构，`go-web-template` 也不例外：
+Go Web 项目通常采用分层架构：
 
 ```
 backend/
@@ -90,7 +126,7 @@ type UserReq struct {
 
 在 `backend/service` 中编写业务代码。
 
-- 接收 `*gins.Context`。
+- 接收 `*gin.Context`。
 - 解析参数: `ctx.ShouldBindJSON(&req)`。
 - 调用 Store 层。
 - 返回结果或错误。
@@ -104,14 +140,41 @@ type UserReq struct {
 
 ---
 
-## 💡 4. 关键知识点复习 (Key Concepts)
+## 🔥 4. RESTful CRUD 实战 (Phase 4 Highlights)
 
-### 4.1 指针 vs 值 (Pointer vs Value)
+在这一阶段，我们完成了完整的用户管理功能，覆盖了 RESTful API 的核心操作：
+
+### 4.1 列表 (List - GET)
+
+- **Xorm**: `DB.Find(&users)` — 查询所有记录。
+- **Go**: 切片 `[]*UserRecord` 的使用。
+- **Service**: 遍历数据库记录，转换为 API 响应模型 `apimodel.OsUserRes`。
+
+### 4.2 更新 (Update - PUT)
+
+- **路由参数**: `ctx.Param("id")` 获取 URL 中的 ID (`/user/123`)。
+- **类型转换**: `strconv.Atoi()` 将字符串 ID 转为整数。
+- **Partial Update (部分更新)**:
+  - 使用 `map[string]interface{}` (你的 `cols` 变量) 来构建更新字段。
+  - `DB.Table(...).ID(id).Update(cols)` — 只更新 map 中存在的字段，避免覆盖其他字段。
+  - 这种技巧在 Go 中非常常用，尤其是处理 `PATCH` 或部分 `PUT` 请求时。
+
+### 4.3 删除 (Delete - DELETE)
+
+- **Xorm**: `DB.ID(id).Delete(&UserRecord{})` — 根据主键删除。
+- **注意**: xorm 的 Delete 需要传入一个非空指针作为条件或模板。
+
+---
+
+## 💡 5. 关键知识点复习 (Key Concepts)
+
+### 5.1 指针 vs 值 (Pointer vs Value)
 
 - `func (u *user) Get(...)`: 方法接收者用指针，可以修改对象状态，避免大对象拷贝。
 - `UserRecord{...}`: 结构体实例化。
+- `Name *string`: 使用指针类型的字段（如 `apimodel.OsUserReq`），可以区分 "前端没传这个字段" (nil) 和 "前端传了空字符串" ("")。
 
-### 4.2 错误处理 (Error Handling)
+### 5.2 错误处理 (Error Handling)
 
 Go 语言的标志性写法：
 
@@ -122,37 +185,55 @@ if err != nil {
 }
 ```
 
-### 4.3 Context (上下文)
+### 5.3 xorm 常用操作速查
 
-- `ctx *gins.Context` (基于 gin.Context) 是贯穿请求周期的核心对象。
-- 用于获取请求参数 (`BindJSON`, `Query`)。
-- 用于响应数据 (`ctx.API.SetData`, `ctx.API.SetError`)。
+- `Get`: 查询单条，返回 `bool` (是否存在)。
+- `Find`: 查询多条，通常传入切片指针 `&users`。
+- `Insert`: 插入。
+- `Update`: 更新，配合 `ID()` 指定主键。
+- `Delete`: 删除。
 
 ---
 
-## ❓ 5. 常见问题 (FAQ)
+## ❓ 6. 常见问题 (FAQ)
 
 ### Q: `bind: address already in use` 是什么？
 
-- **原因**: 端口被占用了（通常是上次启动的程序没关掉）。
-- **解决**: 关闭正在运行的 `debug.exe` 或终端，或者使用 `taskkill /F /IM debug.exe`。
+- **原因**: 端口被占用了。
+- **解决**: 使用 `taskkill /F /IM debug.exe` 杀掉进程。
 
 ### Q: 修改了 Go 代码不生效？
 
 - **原因**: Go 是编译型语言。
-- **解决**: 必须重新运行 `go build` 或 `pnpm run server`（触发重新编译）。
-
-### Q: 结构体字段为什么访问不到？
-
-- **原因**: 字段名首字母小写是 **私有** (private) 的。
-- **解决**: 跨包访问（如 JSON 序列化），字段名首字母必须 **大写** (Public)。
-  - ❌ `type User struct { name string }`
-  - ✅ `type User struct { Name string }`
+- **解决**: 必须重新运行 `pnpm run server`（触发重新编译）。
 
 ---
 
-## 📚 6. 下一步学习建议
+## 🧭 8. 学习策略建议 (Strategy)
 
-1. **SQL 进阶**: 学习连表查询 (`Join`)，事务 (`Transaction`)。
-2. **中间件 (Middleware)**: 学习如何编写鉴权、日志中间件。
-3. **配置文件**: 尝试将数据库连接串改为从环境变量读取，更安全。
+你问到了 **"Deep (深)" vs "Wide (广)"** 的问题。对于现阶段的你（前端转全栈/Go 初学者），我的建议是：
+
+**👉 优先选择 "Deep (深)"，但在当前项目上下文中进行。**
+
+### 为什么选 "Deep"?
+
+1.  **真实场景**: 你现在已经有了一个能跑的项目脚手架 (`my-go-project`)。把它吃透，比写 10 个 "Hello World" 的 Demo 更管用。
+2.  **触类旁通**: 深入理解了 Gin 的中间件机制，以后看 Echo 或 Fiber 框架也是秒懂；深入理解了 context 的传递，换个语言也一样。
+3.  **避免"教程地狱"**: 广度学习容易陷入"只看不练"的陷阱。
+
+### 推荐路径 (Deep in Context)
+
+不要凭空去学 "Go 的 100 个奇技淫巧"，而是**在这个项目里**给自己提需求：
+
+1.  **Phase 4 (当前)**: CRUD 只是起点。
+2.  **Phase 5 (Middleware/Auth)**:
+    - 需求: "我不希望任何人都能删除用户，必须登录且是管理员。"
+    - 知识点: Gin Middleware, JWT, Context 传递用户信息。
+3.  **Phase 6 (Reliability)**:
+    - 需求: "用户填了空邮箱报错 Panic 了？数据库挂了怎么办？"
+    - 知识点: Validator 参数校验, Global Error Handling, Graceful Shutdown.
+4.  **Phase 7 (Performance)**:
+    - 需求: "用户列表有 1000 万条数据，查不动了。"
+    - 知识点: Pagination (分页), Index (索引), Redis Caching.
+
+**结论**: 继续在这个 `my-go-project` 上深挖。当你觉得这个项目已经"拦不住"你的时候，再去探索微服务、RPC 等广度领域。
