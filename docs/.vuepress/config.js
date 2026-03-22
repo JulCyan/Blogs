@@ -1,24 +1,46 @@
 module.exports = {
   base: "/Blogs/",
   title: "JulCyan",
-  description: "Full Stack Developer' Blogs",
+  description: "AI-first learning notes and developer blogs",
   themeConfig: {
     nav: [
+      { text: "AI", link: "/ai/" },
       {
-        text: "Frontend",
+        text: "Develop",
         items: [
-          { text: "基础", link: "/web/basics/html/" },
-          { text: "Vue", link: "/web/vue/" },
-          { text: "Webpack", link: "/web/webpack/" },
-          { text: "Node.js", link: "/web/node/" }
+          { text: "Frontend", link: "/web/" },
+          { text: "Backend", link: "/backend/" },
+          { text: "Ops", link: "/ops/linux" }
         ]
       },
-      { text: "Backend", link: "/backend/" },
-      { text: "OPS", link: "/ops/linux" },
       { text: "Article", link: "/article/technologySelection" },
-      { text: "Repositories", link: "/repositories/" },
+      { text: "Repositories", link: "/repositories/" }
     ],
     sidebar: {
+      "/ai/": [
+        {
+          title: "AI",
+          collapsable: true,
+          children: [
+            {
+              title: "Overview",
+              path: "/ai/"
+            },
+            {
+              title: "OpenClaw",
+              path: "/ai/openclaw"
+            },
+            {
+              title: "Models",
+              path: "/ai/models"
+            },
+            {
+              title: "Telegram",
+              path: "/ai/telegram"
+            }
+          ]
+        }
+      ],
       "/web/basics/": [
         {
           title: "HTML",
@@ -84,6 +106,13 @@ module.exports = {
           children: [{ title: "Basics", path: "/web/node/" }]
         }
       ],
+      "/web/": [
+        {
+          title: "Frontend",
+          collapsable: true,
+          children: [{ title: "Overview", path: "/web/" }]
+        }
+      ],
       "/backend/": [
         {
           title: "Backend",
@@ -106,7 +135,7 @@ module.exports = {
       ],
       "/ops/": [
         {
-          title: "OPS",
+          title: "Ops",
           collapsable: true,
           children: [
             {
@@ -127,13 +156,10 @@ module.exports = {
           children: [
             {
               title: "移动端技术选型",
-              collapsable: true,
-
               path: "/article/technologySelection"
             },
             {
               title: "移动端适配",
-              collapsable: true,
               path: "/article/flexibleUIFramewrok"
             }
           ]
@@ -142,7 +168,6 @@ module.exports = {
     }
   },
   port: 8099,
-  // markdown
   markdown: {
     lineNumbers: true
   },

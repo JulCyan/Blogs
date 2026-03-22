@@ -2,15 +2,13 @@
 home: true
 heroImage: /JulCyan.png
 heroText: JulCyan
-tagline: 全栈知识点记录
-actionText: 快速开始
-actionLink: /web/basics/html/
+tagline: AI 驱动的技术学习记录
+actionText: 从 AI 开始
+actionLink: /ai/
 features:
   - title: AI
-    details: Rules, Workflow, Workspace
-  - title: Frontend
-    details: HTML, CSS, JS, ESNext, React, Vue, Webpack, TypeScript
-  - title: Backend
-    details: Go, Java, MySQL, MyBatis, Spring, Spring MVC, Spring Boot
+    details: OpenClaw, Agent, Model, Channel, Workspace
+  - title: Develop
+    details: Frontend, Backend, Ops, Architecture, 工程化整理
 footer: MIT Licensed | Copyright © 2021 JulCyan
 ---
