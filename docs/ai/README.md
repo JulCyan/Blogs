@@ -36,7 +36,7 @@
 
 ## 当前重点
 
-### [AI Agent 元工作区](https://github.com/JulCyan/ai-agent-workspace-instance)
+### [AI Agent 元工作区](https://github.com/JulCyan/ai-agent-workspace)
 
 这一块虽然还没有单独拆成文档，但它应该被视为 AI 专题里的重点内容，而不只是一个旁支补充。
 
